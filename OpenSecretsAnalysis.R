@@ -101,18 +101,10 @@ df$escalation_4 = factor(df$escalation_4, levels = c(
   "Favor strongly"
 ))
 
-#Create weighted escalation variable
-
-df$esca1 = as.numeric(df$escalation_1)*1
-df$esca2 = as.numeric(df$escalation_2)*2
-df$esca3 = as.numeric(df$escalation_3)*3
-df$esca4 = as.numeric(df$escalation_4)*4
-
-df$esca_dv = (as.numeric(df$esca1) + as.numeric(df$esca2) + as.numeric(df$esca3) + as.numeric(df$esca4)) - 5
-df$esca_dv = df$esca_dv/45*100
-
 #Created scaled escalation variable
 df$esca_scaled = (scale(as.numeric(df$escalation_1)) + scale(as.numeric(df$escalation_2)) + scale(as.numeric(df$escalation_3)) + scale(as.numeric(df$escalation_4)))/4
+df$esca_scaled = (df$esca_scaled - min(df$esca_scaled, na.rm = TRUE))
+df$esca_scaled = df$esca_scaled/max(df$esca_scaled,na.rm = TRUE)*100
 
 #Creating individual escalation variables for each answer
 df$war[as.numeric(df$escalation_4) == 4 | as.numeric(df$escalation_4) == 5 ] <- 1
@@ -162,8 +154,10 @@ df$reputation_3 = factor(df$reputation_3, levels = c(
 ))
 
 df$reputation_scaled = (scale(as.numeric(df$reputation_1)) + scale(as.numeric(df$reputation_2)) + scale(as.numeric(df$reputation_3)))/3
+df$reputation_scaled = (df$reputation_scaled - min(df$reputation_scaled, na.rm = TRUE))
+df$reputation_scaled = df$reputation_scaled/max(df$reputation_scaled,na.rm = TRUE)*100
 
-df$reputation = as.numeric(df$reputation_1) + as.numeric(df$reputation_2) + as.numeric(df$reputation_3)
+
 
 df$GovTrust = 6-as.numeric(df$GovTrust)
 df$NewsTrust = 6-as.numeric(df$NewsTrust)
@@ -175,8 +169,8 @@ df$Read.FP = 6-as.numeric(df$Read.FP)
 ###Analysis###
 
 #Linear Models
-df_res = df %>% dplyr::select(denial, adversary, esca_dv, esca_scaled, MA_scaled, GovTrust, 
-                              NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP, reputation, 
+df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrust, 
+                              NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP,
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, diplomacy, age, gender, hhi, ethnicity, hispanic, education, political_party,region =)
 df_res[] <- lapply(df_res, as.numeric)
 write.csv(df_res, "2X2Data_Final.csv")
