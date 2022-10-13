@@ -165,7 +165,12 @@ df$reputation_scaled = (scale(as.numeric(df$reputation_1)) + scale(as.numeric(df
 
 df$reputation = as.numeric(df$reputation_1) + as.numeric(df$reputation_2) + as.numeric(df$reputation_3)
 
-
+df$GovTrust = 6-as.numeric(df$GovTrust)
+df$NewsTrust = 6-as.numeric(df$NewsTrust)
+df$IntTrust = 6-as.numeric(df$IntTrust)
+df$Military.Service = 2-as.numeric(df$Military.Service)
+df$Military.Service[df$Military.Service ==-1] = NA
+df$Read.FP = 6-as.numeric(df$Read.FP)
 
 ###Analysis###
 
