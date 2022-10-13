@@ -163,14 +163,14 @@ df$reputation_3 = factor(df$reputation_3, levels = c(
 
 df$reputation_scaled = (scale(as.numeric(df$reputation_1)) + scale(as.numeric(df$reputation_2)) + scale(as.numeric(df$reputation_3)))/3
 
-#df$reputation = as.numeric(df$reputation_1) + as.numeric(df$reputation_2) + as.numeric(df$reputation_3)
+df$reputation = as.numeric(df$reputation_1) + as.numeric(df$reputation_2) + as.numeric(df$reputation_3)
 
 
 
 ###Analysis###
 
 #Linear Models
-df_res = df %>% dplyr::select(denial, adversary, esca_dv, esca_scaled, treat, MA_scaled, GovTrust, 
+df_res = df %>% dplyr::select(denial, adversary, esca_dv, esca_scaled, MA_scaled, GovTrust, 
                               NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP, reputation, 
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, diplomacy, age, gender, hhi, ethnicity, hispanic, education, political_party,region =)
 df_res[] <- lapply(df_res, as.numeric)
