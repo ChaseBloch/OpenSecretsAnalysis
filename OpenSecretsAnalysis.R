@@ -179,7 +179,5 @@ df_res = df %>% dplyr::select(denial, adversary, esca_dv, esca_scaled, MA_scaled
                               NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP, reputation, 
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, diplomacy, age, gender, hhi, ethnicity, hispanic, education, political_party,region =)
 df_res[] <- lapply(df_res, as.numeric)
-df_res = df_res[!is.na(df_res$esca_scaled),]
-df_res = df_res[complete.cases(df_res),]
 write.csv(df_res, "2X2Data_Final.csv")
 
