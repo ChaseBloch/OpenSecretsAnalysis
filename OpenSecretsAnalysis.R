@@ -169,3 +169,58 @@ df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrus
 df_res[] <- lapply(df_res, as.numeric)
 write.csv(df_res, "2X2Data_Final.csv")
 
+
+###Bar Plot####
+
+means = c(mean(df_res$war[df$denial == 1],na.rm = TRUE), 
+          mean(df_res$airstrike[df$denial == 1],na.rm = TRUE),
+          mean(df_res$sanctions[df$denial == 1],na.rm = TRUE), 
+          mean(df_res$diplomacy[df$denial == 1],na.rm = TRUE),
+          mean(df_res$war[df$denial == 0],na.rm = TRUE), 
+                   mean(df_res$airstrike[df$denial == 0],na.rm = TRUE),
+                   mean(df_res$sanctions[df$denial == 0],na.rm = TRUE), 
+                   mean(df_res$diplomacy[df$denial == 0],na.rm = TRUE)
+          )
+
+sds = c(sd(df_res$war[df$denial == 1],na.rm = TRUE), 
+          sd(df_res$airstrike[df$denial == 1],na.rm = TRUE),
+          sd(df_res$sanctions[df$denial == 1],na.rm = TRUE), 
+          sd(df_res$diplomacy[df$denial == 1],na.rm = TRUE),
+          sd(df_res$war[df$denial == 0],na.rm = TRUE), 
+          sd(df_res$airstrike[df$denial == 0],na.rm = TRUE),
+          sd(df_res$sanctions[df$denial == 0],na.rm = TRUE), 
+          sd(df_res$diplomacy[df$denial == 0],na.rm = TRUE)
+)
+
+treat = c("Covert", "Covert","Covert","Covert", "Overt", "Overt", "Overt", "Overt")
+type = c("War", "Airstrike", "Sanctions", "Diplomacy", "War", "Airstrike", "Sanctions", "Diplomacy")
+type = factor(type, levels = c(
+  "Diplomacy",
+  "Sanctions",
+  "Airstrike",
+  "War"
+))
+
+forgraph = data.frame(means, treat, type, sds)
+
+ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(type)) +
+  geom_bar(stat = "identity", 
+           position = position_dodge(width = 0.9)) +
+  geom_errorbar(aes(x=type, ymin=means-sds, ymax=means+sds),
+                width = 0.25,
+                position = position_dodge(width = 0.9)) +
+  xlab("") +
+  ylab("") +
+  scale_y_discrete(limits = c(1,2,3,4,5),
+                   labels = c("Strongly\nOppose", "Somewhat\nOppose", "Neutral", "Somewhat\nFavor", "Strongly\nFavor")) +
+  scale_fill_discrete(name = "", labels = c("Denial", "Overt")) +
+  theme(axis.text.y = element_text(angle = 0, size = 12.5),
+        axis.text.x = element_text(size = 12.5),
+        legend.text = element_text(size = 12.5))
+
+
+###Mediation Analysis###
+
+
+
+
