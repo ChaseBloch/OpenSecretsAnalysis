@@ -107,17 +107,11 @@ df$esca_scaled = (df$esca_scaled - min(df$esca_scaled, na.rm = TRUE))
 df$esca_scaled = df$esca_scaled/max(df$esca_scaled,na.rm = TRUE)*100
 
 #Creating individual escalation variables for each answer
-df$war[as.numeric(df$escalation_4) == 4 | as.numeric(df$escalation_4) == 5 ] <- 1
-df$war[as.numeric(df$escalation_4) == 1 | as.numeric(df$escalation_4) == 2 | as.numeric(df$escalation_4) == 3] <- 0
+df$war = df$escalation_4
+df$airstrike = df$escalation_3
+df$sanctions = df$escalation_2
+df$diplomacy = df$escalation_1
 
-df$airstrike[as.numeric(df$escalation_3) == 4 | as.numeric(df$escalation_3) == 5 ] <- 1
-df$airstrike[as.numeric(df$escalation_3) == 1 | as.numeric(df$escalation_3) == 2 | as.numeric(df$escalation_3) == 3] <- 0
-
-df$sanctions[as.numeric(df$escalation_2) == 4 | as.numeric(df$escalation_2) == 5 ] <- 1
-df$sanctions[as.numeric(df$escalation_2) == 1 | as.numeric(df$escalation_2) == 2 | as.numeric(df$escalation_2) == 3 ] <- 0
-
-df$diplomacy[as.numeric(df$escalation_1) == 4 | as.numeric(df$escalation_1) == 5 ] <- 1
-df$diplomacy[as.numeric(df$escalation_1) == 1 | as.numeric(df$escalation_1) == 2 | as.numeric(df$escalation_1) == 3 ] <- 0
 
 
 #Military Assertiveness
