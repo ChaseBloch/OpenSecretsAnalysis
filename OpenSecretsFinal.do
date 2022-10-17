@@ -5,48 +5,6 @@ cd "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\"
 import delimited "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\2X2Data_Final.csv"
 destring *, ignore("NA") replace
 
-***Cleaning Demographic variables***
-*Gender
-gen male=gender
-drop gender
-replace male=0 if male==2 
-
-* income
-recode hhi (-3105=.) //these are respondents who preferred not to answer
-
-*hispanic
-gen Hispanic=hispanic
-recode Hispanic (15=.) //these are respondents who preferred not to answer
-replace Hispanic=0 if Hispanic==1
-replace Hispanic=1 if Hispanic>1
-drop hispanic
-ren Hispanic hispanic
-
-*ethnicity
-gen Ethnicity=ethnicity
-drop ethnicity
-ren Ethnicity ethnicity
-gen white=(ethnicity==1 & hispanic==0) 
-gen black=(ethnicity==2) 
-
-*education
-gen Education=education
-replace Education=0 if Education==-3105 //this is none of the above category. probably respondents who did not receive any formal education
-drop education 
-ren Education education
-
-*political party
-gen Political_party=political_party
-drop political_party
-ren Political_party political_party
-gen republican=1 if political_party==9 | political_party==10 | political_party==5 | political_party==8
-recode republican (.=0)
-
-gen democrat=1 if political_party==1 | political_party==2 | political_party==3 | political_party==6
-recode democrat (.=0) 
-
-//when we add these two political party variables, then the baseline is others and independents
-
 ***Creating Tables for Iran***
 
 drop if adversary == 0
