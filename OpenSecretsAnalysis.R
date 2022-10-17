@@ -233,6 +233,8 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
         axis.text.x = element_text(size = 12.5),
         legend.text = element_text(size = 12.5))
 
+ggsave("avg_escalation.pdf")
+
 
 
 
