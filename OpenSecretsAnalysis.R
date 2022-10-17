@@ -157,12 +157,30 @@ df$Military.Service = 2-as.numeric(df$Military.Service)
 df$Military.Service[df$Military.Service ==-1] = NA
 df$Read.FP = 6-as.numeric(df$Read.FP)
 
+###Cleaning demographic controls###
+df$male = df$gender
+df$male[df$male == 2] = 0
+
+df$hhi[df$hhi == -3105] = NA
+
+df$hispanic[df$hispanic == 15] = NA
+df$hispanic = ifelse(df$hispanic > 1, 1, 0)
+
+df$white = ifelse(df$ethnicity == 1 & df$hispanic == 0, 1, 0)
+df$black = ifelse(df$ethnicity == 2, 1, 0)
+
+df$education[df$education == -3105] = 0
+
+df$republican = ifelse(df$political_party == 9 | df$political_party == 10 | df$political_party == 5 | df$political_party == 8, 1, 0)
+df$democrat = ifelse(df$political_party == 1 | df$political_party == 2 | df$political_party == 3 | df$political_party == 6, 1, 0)
+
 ###Analysis###
 
 #Linear Models
 df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrust, 
                               NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP,
-                              reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, diplomacy, age, gender, hhi, ethnicity, hispanic, education, political_party,region =)
+                              reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, 
+                              diplomacy, age, male, hhi, white, black, education, republican, democrat)
 df_res[] <- lapply(df_res, as.numeric)
 write.csv(df_res, "2X2Data_Final.csv")
 
