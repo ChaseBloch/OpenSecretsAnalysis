@@ -4,6 +4,7 @@ library(MASS)
 library(dplyr)
 library(stargazer)
 library(httr)
+library(ggplot)
 
 setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis")
 df = read.csv("2X2Data_Final.csv")
@@ -34,15 +35,15 @@ m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust
 
 
 med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                   robustSE = TRUE, sims = 100)
+                   robustSE = TRUE, sims = 1000)
 summary(med.rep_dis)
 plot(med.rep_dis)
 
-med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 100, boot = TRUE)
+med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 1000, boot = TRUE)
 summary(med.amb_dis)
 plot(med.amb_dis)
 
-med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 100, boot = TRUE)
+med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 1000, boot = TRUE)
 summary(med.ins_dis)
 plot(med.ins_dis)
 
@@ -96,15 +97,15 @@ m2_ins = lm(esca_scaled ~ insulting + denial, data = df_dis)
 
 
 med.rep <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                   robustSE = TRUE, sims = 100)
+                   robustSE = TRUE, sims = 1000)
 summary(med.rep)
 plot(med.rep)
 
-med.amb <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 100, boot = TRUE)
+med.amb <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 1000, boot = TRUE)
 summary(med.amb)
 plot(med.amb)
 
-med.ins <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 100, boot =TRUE)
+med.ins <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 1000, boot =TRUE)
 summary(med.ins)
 plot(med.ins)
 ##########################
@@ -127,15 +128,15 @@ m2_ins = lm(esca_scaled ~ insulting + denial, data = df_dis)
 
 
 med.rep_dem <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                   robustSE = TRUE, sims = 100)
+                   robustSE = TRUE, sims = 1000)
 summary(med.rep_dem)
 plot(med.rep_dem)
 
-med.amb_dem <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 100, boot = TRUE)
+med.amb_dem <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 1000, boot = TRUE)
 summary(med.amb_dem)
 plot(med.amb_dem)
 
-med.ins_dem <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 100, boot =TRUE)
+med.ins_dem <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 1000, boot =TRUE)
 summary(med.ins_dem)
 plot(med.ins_dem)
 ##########################
