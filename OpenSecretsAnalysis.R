@@ -207,6 +207,17 @@ sds = c(sd(df_res$war[df$denial == 1],na.rm = TRUE),
           sd(df_res$diplomacy[df$denial == 0],na.rm = TRUE)
 )
 
+ns = c(length(df_res$war[df$denial == 1]), 
+        length(df_res$airstrike[df$denial == 1]),
+        length(df_res$sanctions[df$denial == 1]), 
+        length(df_res$diplomacy[df$denial == 1]),
+        length(df_res$war[df$denial == 0]), 
+        length(df_res$airstrike[df$denial == 0]),
+        length(df_res$sanctions[df$denial == 0]), 
+        length(df_res$diplomacy[df$denial == 0])
+)
+
+
 treat = c("Covert", "Covert","Covert","Covert", "Overt", "Overt", "Overt", "Overt")
 type = c("War", "Airstrike", "Sanctions", "Diplomacy", "War", "Airstrike", "Sanctions", "Diplomacy")
 type = factor(type, levels = c(
@@ -216,12 +227,13 @@ type = factor(type, levels = c(
   "War"
 ))
 
-forgraph = data.frame(means, treat, type, sds)
+forgraph = data.frame(means, treat, type, sds, ns)
+forgraph$error = qt(0.975, df=ns-1)*sds/sqrt(ns)
 
 ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(type)) +
   geom_bar(stat = "identity", 
            position = position_dodge(width = 0.9)) +
-  geom_errorbar(aes(x=type, ymin=means-sds, ymax=means+sds),
+  geom_errorbar(aes(x=type, ymin=means-error, ymax=means+error),
                 width = 0.25,
                 position = position_dodge(width = 0.9)) +
   xlab("") +
