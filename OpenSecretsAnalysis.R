@@ -185,36 +185,38 @@ df_res[] <- lapply(df_res, as.numeric)
 write.csv(df_res, "2X2Data_Final.csv")
 
 
-###Bar Plot####
+###Bar Plot Iran####
 
-means = c(mean(df_res$war[df$denial == 1],na.rm = TRUE), 
-          mean(df_res$airstrike[df$denial == 1],na.rm = TRUE),
-          mean(df_res$sanctions[df$denial == 1],na.rm = TRUE), 
-          mean(df_res$diplomacy[df$denial == 1],na.rm = TRUE),
-          mean(df_res$war[df$denial == 0],na.rm = TRUE), 
-                   mean(df_res$airstrike[df$denial == 0],na.rm = TRUE),
-                   mean(df_res$sanctions[df$denial == 0],na.rm = TRUE), 
-                   mean(df_res$diplomacy[df$denial == 0],na.rm = TRUE)
+df_i = df_res[df_res$adversary==1]
+
+means = c(mean(df_i$war[df_i$denial == 1],na.rm = TRUE), 
+          mean(df_i$airstrike[df_i$denial == 1],na.rm = TRUE),
+          mean(df_i$sanctions[df_i$denial == 1],na.rm = TRUE), 
+          mean(df_i$diplomacy[df_i$denial == 1],na.rm = TRUE),
+          mean(df_i$war[df_i$denial == 0],na.rm = TRUE), 
+                   mean(df_i$airstrike[df_i$denial == 0],na.rm = TRUE),
+                   mean(df_i$sanctions[df_i$denial == 0],na.rm = TRUE), 
+                   mean(df_i$diplomacy[df_i$denial == 0],na.rm = TRUE)
           )
 
-sds = c(sd(df_res$war[df$denial == 1],na.rm = TRUE), 
-          sd(df_res$airstrike[df$denial == 1],na.rm = TRUE),
-          sd(df_res$sanctions[df$denial == 1],na.rm = TRUE), 
-          sd(df_res$diplomacy[df$denial == 1],na.rm = TRUE),
-          sd(df_res$war[df$denial == 0],na.rm = TRUE), 
-          sd(df_res$airstrike[df$denial == 0],na.rm = TRUE),
-          sd(df_res$sanctions[df$denial == 0],na.rm = TRUE), 
-          sd(df_res$diplomacy[df$denial == 0],na.rm = TRUE)
+sds = c(sd(df_i$war[df_i$denial == 1],na.rm = TRUE), 
+          sd(df_i$airstrike[df_i$denial == 1],na.rm = TRUE),
+          sd(df_i$sanctions[df_i$denial == 1],na.rm = TRUE), 
+          sd(df_i$diplomacy[df_i$denial == 1],na.rm = TRUE),
+          sd(df_i$war[df_i$denial == 0],na.rm = TRUE), 
+          sd(df_i$airstrike[df_i$denial == 0],na.rm = TRUE),
+          sd(df_i$sanctions[df_i$denial == 0],na.rm = TRUE), 
+          sd(df_i$diplomacy[df_i$denial == 0],na.rm = TRUE)
 )
 
-ns = c(length(df_res$war[df$denial == 1]), 
-        length(df_res$airstrike[df$denial == 1]),
-        length(df_res$sanctions[df$denial == 1]), 
-        length(df_res$diplomacy[df$denial == 1]),
-        length(df_res$war[df$denial == 0]), 
-        length(df_res$airstrike[df$denial == 0]),
-        length(df_res$sanctions[df$denial == 0]), 
-        length(df_res$diplomacy[df$denial == 0])
+ns = c(length(df_i$war[df_i$denial == 1]), 
+        length(df_i$airstrike[df_i$denial == 1]),
+        length(df_i$sanctions[df_i$denial == 1]), 
+        length(df_i$diplomacy[df_i$denial == 1]),
+        length(df_i$war[df_i$denial == 0]), 
+        length(df_i$airstrike[df_i$denial == 0]),
+        length(df_i$sanctions[df_i$denial == 0]), 
+        length(df_i$diplomacy[df_i$denial == 0])
 )
 
 
@@ -227,6 +229,7 @@ type = factor(type, levels = c(
   "War"
 ))
 
+
 forgraph = data.frame(means, treat, type, sds, ns)
 forgraph$error = qt(0.975, df=ns-1)*sds/sqrt(ns)
 
@@ -238,15 +241,84 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
                 position = position_dodge(width = 0.9)) +
   xlab("") +
   ylab("") +
+  ggtitle("Iran: Average Preference per Response Option") +
   scale_y_discrete(limits = c(1,2,3,4,5),
-                   labels = c("Strongly\nOppose", "Somewhat\nOppose", "Neutral", "Somewhat\nFavor", "Strongly\nFavor")) +
+                   labels = c("Strongly\nOppose", "Somewhat\nOppose", "Neutral", "Somewhat\nFavor", "Strongly\nFavor"),
+                   expand = expansion(add = c(0,1))) +
   scale_fill_discrete(name = "", labels = c("Denial", "Overt")) +
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
         axis.text.x = element_text(size = 12.5),
-        legend.text = element_text(size = 12.5))
+        legend.text = element_text(size = 12.5)) 
+ 
 
-ggsave("avg_escalation.pdf")
+ggsave("avg_escalation_iran.pdf")
+####################
+###Bar Plot Qatar###
+df_q = df_res[df_res$adversary==0]
 
+means = c(mean(df_q$war[df_q$denial == 1],na.rm = TRUE), 
+          mean(df_q$airstrike[df_q$denial == 1],na.rm = TRUE),
+          mean(df_q$sanctions[df_q$denial == 1],na.rm = TRUE), 
+          mean(df_q$diplomacy[df_q$denial == 1],na.rm = TRUE),
+          mean(df_q$war[df_q$denial == 0],na.rm = TRUE), 
+          mean(df_q$airstrike[df_q$denial == 0],na.rm = TRUE),
+          mean(df_q$sanctions[df_q$denial == 0],na.rm = TRUE), 
+          mean(df_q$diplomacy[df_q$denial == 0],na.rm = TRUE)
+)
+
+sds = c(sd(df_q$war[df_q$denial == 1],na.rm = TRUE), 
+        sd(df_q$airstrike[df_q$denial == 1],na.rm = TRUE),
+        sd(df_q$sanctions[df_q$denial == 1],na.rm = TRUE), 
+        sd(df_q$diplomacy[df_q$denial == 1],na.rm = TRUE),
+        sd(df_q$war[df_q$denial == 0],na.rm = TRUE), 
+        sd(df_q$airstrike[df_q$denial == 0],na.rm = TRUE),
+        sd(df_q$sanctions[df_q$denial == 0],na.rm = TRUE), 
+        sd(df_q$diplomacy[df_q$denial == 0],na.rm = TRUE)
+)
+
+ns = c(length(df_q$war[df_q$denial == 1]), 
+       length(df_q$airstrike[df_q$denial == 1]),
+       length(df_q$sanctions[df_q$denial == 1]), 
+       length(df_q$diplomacy[df_q$denial == 1]),
+       length(df_q$war[df_q$denial == 0]), 
+       length(df_q$airstrike[df_q$denial == 0]),
+       length(df_q$sanctions[df_q$denial == 0]), 
+       length(df_q$diplomacy[df_q$denial == 0])
+)
+
+
+treat = c("Covert", "Covert","Covert","Covert", "Overt", "Overt", "Overt", "Overt")
+type = c("War", "Airstrike", "Sanctions", "Diplomacy", "War", "Airstrike", "Sanctions", "Diplomacy")
+type = factor(type, levels = c(
+  "Diplomacy",
+  "Sanctions",
+  "Airstrike",
+  "War"
+))
+
+
+forgraph = data.frame(means, treat, type, sds, ns)
+forgraph$error = qt(0.975, df=ns-1)*sds/sqrt(ns)
+
+ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(type)) +
+  geom_bar(stat = "identity", 
+           position = position_dodge(width = 0.9)) +
+  geom_errorbar(aes(x=type, ymin=means-error, ymax=means+error),
+                width = 0.25,
+                position = position_dodge(width = 0.9)) +
+  xlab("") +
+  ylab("") +
+  ggtitle("Qatar: Average Preference per Response Option") +
+  scale_y_discrete(limits = c(1,2,3,4,5),
+                   labels = c("Strongly\nOppose", "Somewhat\nOppose", "Neutral", "Somewhat\nFavor", "Strongly\nFavor"),
+                   expand = expansion(add = c(0,1))) +
+  scale_fill_discrete(name = "", labels = c("Denial", "Overt")) +
+  theme(axis.text.y = element_text(angle = 0, size = 12.5),
+        axis.text.x = element_text(size = 12.5),
+        legend.text = element_text(size = 12.5)) 
+
+
+ggsave("avg_escalation_qatar.pdf")
 
 
 
