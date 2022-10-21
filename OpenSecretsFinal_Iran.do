@@ -1,6 +1,6 @@
 clear all
 
-cd "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\"
+cd "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\Figures\"
 
 import delimited "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\2X2Data_Final.csv"
 destring *, ignore("NA") replace
@@ -12,8 +12,8 @@ drop if adversary == 0
 *Tables with dispositional controls
 eststo: reg esca_scaled i.denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
 margins denial, atmeans
-marginsplot, recast(bar) xtitle("Denial")
-graph export denial_pp.jpg, replace width(4000) height(3000)
+marginsplot, recast(bar) xtitle("Denial") title("Iran: Adjusted predictions of denial with 95% CIs")
+graph export denial_pp_iran.jpg, replace width(4000) height(3000)
 
 eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
 eststo: ologit ambiguity denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
