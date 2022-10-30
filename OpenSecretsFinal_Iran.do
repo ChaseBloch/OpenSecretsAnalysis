@@ -15,7 +15,13 @@ margins denial, atmeans
 marginsplot, recast(bar) xtitle("Denial") title("Iran: Adjusted predictions of denial with 95% CIs")
 graph export denial_pp_iran.jpg, replace width(4000) height(3000)
 
-eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
+eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp
+estimates store m1 
+
+coefplot m1, nolabel drop(_cons) keep(*:) xline(0) coeflabels(reputation_scaled = "Reputation Scaled" denial = "Denial" ma_scaled = "Military Assertiveness" nc_scaled = "National Chauvinism" govtrust = "Government Trust" newstrust = "Newstrust" inttrust = "International Trust" militaryservice = "Military Service" readfp = "Read Foreign Policy") title("Treatment and Escalation Preferences") 
+
+graph export OS_MainModel.jpg, replace width(4000) height(3000)
+
 eststo: ologit ambiguity denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
 eststo: ologit insulting denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
 
