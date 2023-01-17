@@ -19,11 +19,11 @@ setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis
 
 #Import Survey and correct variable names
 surveys <- all_surveys()
-df <- fetch_survey(surveyID = surveys$id[10],verbose =TRUE,force_request = TRUE)
+df1 <- fetch_survey(surveyID = surveys$id[10],verbose =TRUE,force_request = TRUE)
 df2 <- fetch_survey(surveyID = surveys$id[2],verbose =TRUE,force_request = TRUE)
-df <- rbindlist(list(df, df2), fill = TRUE)
-names(df) <- gsub(":", "", names(df))
-names(df) <- make.names(names(df), unique=TRUE)
+df3 <- rbindlist(list(df1, df2), fill = TRUE)
+names(df3) <- gsub(":", "", names(df3))
+names(df3) <- make.names(names(df3), unique=TRUE)
 
 
 ###Attention Checks###
@@ -31,7 +31,7 @@ names(df) <- make.names(names(df), unique=TRUE)
 
 
 #Drop based on first attention check
-df <- df[!is.na(df$AC1_1) & !is.na(df$AC1_2) & df$Status != "Survey Preview" & df$Finished == "TRUE",]
+df <- df3[!is.na(df3$AC1_1) & !is.na(df3$AC1_2) & df3$Status != "Survey Preview" & df3$Finished == "TRUE",]
 df[] <- lapply(df, function(x) {
   is.na(levels(x)) <- levels(x) == "NA"
   x
