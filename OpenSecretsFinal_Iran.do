@@ -10,25 +10,25 @@ destring *, ignore("NA") replace
 drop if adversary == 0
 
 *Tables with dispositional controls
-eststo: reg esca_scaled i.denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
+eststo: reg esca_scaled i.denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
 margins denial, atmeans
 marginsplot, recast(bar) xtitle("Denial") title("Iran: Adjusted predictions of denial with 95% CIs")
 graph export denial_pp_iran.jpg, replace width(4000) height(3000)
 
-eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp
+eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust readfp
 estimates store m1 
 
-coefplot m1, nolabel drop(_cons) keep(*:) xline(0) coeflabels(reputation_scaled = "Reputation Scaled" denial = "Denial" ma_scaled = "Military Assertiveness" nc_scaled = "National Chauvinism" govtrust = "Government Trust" newstrust = "Newstrust" inttrust = "International Trust" militaryservice = "Military Service" readfp = "Read Foreign Policy") title("Treatment and Escalation Preferences") 
+coefplot m1, nolabel drop(_cons) keep(*:) xline(0) coeflabels(reputation_scaled = "Reputation Scaled" denial = "Denial" ma_scaled = "Military Assertiveness" nc_scaled = "National Chauvinism" govtrust = "Government Trust" newstrust = "Newstrust" inttrust = "International Trust" readfp = "Foreign Policy Interest") title("Treatment and Escalation Preferences") 
 
 graph export OS_MainModel.jpg, replace width(4000) height(3000)
 
-eststo: ologit ambiguity denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
-eststo: ologit insulting denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
+eststo: ologit ambiguity denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
+eststo: ologit insulting denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
 
 esttab using OS_MainModel.rtf, replace b(3) se(3) noconstant  star(* .10 ** .05 *** .01)  ///
 	title("Iran: Escalation Preference and Mediators with Dispositional Controls") ///
-	coeflabels(denial "Denial" ma_scaled "Military Assertiveness" nc_scaled "National Chauvinism" govtrust "Trust in Gov." newstrust "Trust in News" inttrust 		"International Trust" militaryservice "Military Service" readfp "Reads News") ///
-	mtitles("Escalation" "Reputation" "Certainty" "Insulting")
+	coeflabels(denial "Denial" ma_scaled "Military Assertiveness" nc_scaled "National Chauvinism" govtrust "Trust in Gov." newstrust "Trust in News" inttrust 		"International Trust" readfp "Foreign Policy Interest") ///
+	mtitles("Escalation" "Reputation" "Certainty" "Insult")
 eststo clear
 
 
