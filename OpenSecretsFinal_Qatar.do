@@ -10,19 +10,19 @@ destring *, ignore("NA") replace
 drop if adversary == 1
 
 *Tables with dispositional controls
-eststo: reg esca_scaled i.denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
+eststo: reg esca_scaled i.denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
 margins denial, atmeans
 marginsplot, recast(bar) xtitle("Denial") title("Qatar: Adjusted predictions of denial with 95% CIs")
 graph export denial_pp_qatar.jpg, replace width(4000) height(3000)
 
-eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
-eststo: ologit ambiguity denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
-eststo: ologit insulting denial ma_scaled nc_scaled govtrust newstrust inttrust militaryservice readfp  
+eststo: reg reputation_scaled denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
+eststo: ologit ambiguity denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
+eststo: ologit insulting denial ma_scaled nc_scaled govtrust newstrust inttrust readfp  
 
 esttab using OS_MainModel_Qatar.rtf, replace b(3) se(3) noconstant  star(* .10 ** .05 *** .01)  ///
 	title("Qatar: Escalation Preference and Mediators with Dispositional Controls") ///
-	coeflabels(denial "Denial" ma_scaled "Military Assertiveness" nc_scaled "National Chauvinism" govtrust "Trust in Gov." newstrust "Trust in News" inttrust 		"International Trust" militaryservice "Military Service" readfp "Reads News") ///
-	mtitles("Escalation" "Reputation" "Certainty" "Insulting")
+	coeflabels(denial "Denial" ma_scaled "Militant Assertiveness" nc_scaled "National Chauvinism" govtrust "Trust in Gov." newstrust "Trust in News" inttrust "International Trust" readfp "Foreign Policy Interest") ///
+	mtitles("Escalation" "Reputation" "Certainty" "Insult")
 eststo clear
 
 
