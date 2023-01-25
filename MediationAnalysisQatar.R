@@ -24,13 +24,13 @@ df_dis = df_i %>% dplyr::select(denial, esca_scaled, MA_scaled, GovTrust,
 df_dis = df_dis[complete.cases(df_dis),]
 
 
-m_rep = lm(reputation_scaled ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Military.Service + Read.FP, data = df_dis)
-m_amb = lm(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Military.Service + Read.FP, data = df_dis)
-m_ins = polr(insulting ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Military.Service + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
+m_rep = lm(reputation_scaled ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
+m_amb = lm(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
+m_ins = polr(insulting ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
 
-m2_rep = lm(esca_scaled ~ reputation_scaled + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Military.Service + Read.FP, data = df_dis)
-m2_amb = lm(esca_scaled ~ ambiguity + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Military.Service + Read.FP, data = df_dis)
-m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Military.Service + Read.FP, data = df_dis)
+m2_rep = lm(esca_scaled ~ reputation_scaled + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
+m2_amb = lm(esca_scaled ~ ambiguity + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
+m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
 
 
 
@@ -47,7 +47,7 @@ med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", 
 summary(med.ins_dis)
 plot(med.ins_dis)
 
-variable = c("Reputation", "Ambiguity", "Insulting")
+variable = c("Reputation", "Certainty", "Insult")
 estimate = c(med.rep_dis$n0, med.amb_dis$n0, med.ins_dis$n0)
 lower = c(med.rep_dis$n0.ci[1], med.amb_dis$n0.ci[1], med.ins_dis$n0.ci[1])
 upper = c(med.rep_dis$n0.ci[2], med.amb_dis$n0.ci[2], med.ins_dis$n0.ci[2])
@@ -76,8 +76,7 @@ p = ggplot(med_props,
         axis.text.x = element_text(size = 12.5)) +
   coord_flip()
 
-setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis/Figures")
-ggsave("prop_med_qatar.pdf")
+ggsave("Figures/prop_med_qatar.png", width = 6, height = 4, unit = "in")
 ##########################
 
 

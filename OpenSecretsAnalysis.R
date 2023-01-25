@@ -44,6 +44,13 @@ df = df[df$i.AC2 == "The United States and Iran" | df$q.AC2 == "The United State
 df <- df[df$Status == "IP Address",]
 df <- df[!is.na(df$Status),]
 
+#Check what percentage of respondents got the treatment check correct
+iran_overt = nrow(df[df$i.AC3 == "Iran claimed responsibility for the attack." & !is.na(df$i.overt)])
+iran_covert = nrow(df[df$i.AC3 == "Iran denied involvement in the attack." & !is.na(df$i.denial)])
+qatar_overt = nrow(df[df$q.AC3 == "Qatar claimed responsibility for the attack." & !is.na(df$q.overt)])
+qatar_covert = nrow(df[df$q.AC3 == "Qatar denied involvement in the attack." & !is.na(df$q.denial)]) 
+perc3 = (iran_overt + iran_covert + qatar_overt + qatar_covert)/1431
+
 #Creating denial and adversary variables
 df$denial = ifelse(!is.na(df$q.denial) | !is.na(df$i.denial), 1,0)
 df$adversary = ifelse(!is.na(df$i.AC2), 1,0)
@@ -182,7 +189,7 @@ df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrus
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, 
                               diplomacy, age, male, hhi, white, black, education, republican, democrat)
 df_res[] <- lapply(df_res, as.numeric)
-write.csv(df_res, "2X2Data_Final.csv")
+#write.csv(df_res, "2X2Data_Final.csv")
 
 
 ###Bar Plot Iran####
@@ -241,9 +248,9 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
                 position = position_dodge(width = 0.9)) +
   xlab("") +
   ylab("") +
-  ggtitle("Iran: Average Preference per Response Option") +
+#  ggtitle("Iran: Average Preference per Response Option") +
   scale_y_discrete(limits = c(1,2,3,4,5),
-                   labels = c("Strongly\nOppose", "Somewhat\nOppose", "Neutral", "Somewhat\nFavor", "Strongly\nFavor"),
+                   labels = c("Strongly\nOppose (1)", "Somewhat\nOppose (2)", "Neutral (3)", "Somewhat\nFavor (4)", "Strongly\nFavor (5)"),
                    expand = expansion(add = c(0,1))) +
   scale_fill_discrete(name = "", labels = c("Denial", "Overt")) +
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
@@ -251,7 +258,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
         legend.text = element_text(size = 12.5)) 
  
 
-ggsave("avg_escalation_iran.pdf")
+ggsave("Figures/avg_escalation_iran.png", width = 6, height = 4, unit = "in")
 ####################
 ###Bar Plot Qatar###
 df_q = df_res[df_res$adversary==0]
@@ -318,7 +325,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
         legend.text = element_text(size = 12.5)) 
 
 
-ggsave("avg_escalation_qatar.pdf")
+#ggsave("avg_escalation_qatar.pdf")
 
 
 
