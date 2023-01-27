@@ -12,15 +12,11 @@ margins, dydx(denial) at(adversary = (0 1))
 marginsplot, recast(bar) title("") xtitle("") xlabel(0 "Qatar" 1 "Iran") yscale(range(-25 0)) ylabel(0 -5 -10 -15 -20 -25)
 graph export ME_Escalation.jpg, replace width(4000) height(3000)
 
-
- ciopt(color(%30)) xlabel(#10) legend(order(1 "Non-Comment" 2 "Denial" 3 "Acknowledgment" )) title("") xtitle("Media Attention") yscale(range(-0.2 1.2)) ylabel(0 1)
-graph export ma_mapl.jpg, replace width(4000) height(3000)
-
 eststo: reg reputation_scaled denial##adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp  
 eststo: ologit ambiguity i.denial##i.adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp
 estimates store m2
 margins adversary, dydx(denial) predict(xb)
-marginsplot, recast(bar) title("") xtitle("") xlabel(0 "Qatar" 1 "Iran")
+marginsplot, recast(bar) title("") xtitle("") xlabel(0 "Qatar" 1 "Iran") yscale(range(-4 0)) ylabel(0 -1 -2 -3 -4)
 graph export ME_Certainty.jpg, replace width(4000) height(3000) 
   
 eststo: ologit insulting denial##adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp  
