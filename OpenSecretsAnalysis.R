@@ -258,7 +258,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
         legend.text = element_text(size = 12.5)) 
  
 
-ggsave("Figures/avg_escalation_iran.png", width = 6, height = 4, unit = "in")
+#ggsave("Figures/avg_escalation_iran.png", width = 6, height = 4, unit = "in")
 ####################
 ###Bar Plot Qatar###
 df_q = df_res[df_res$adversary==0]
@@ -317,7 +317,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
   ylab("") +
   ggtitle("Qatar: Average Preference per Response Option") +
   scale_y_discrete(limits = c(1,2,3,4,5),
-                   labels = c("Strongly\nOppose", "Somewhat\nOppose", "Neutral", "Somewhat\nFavor", "Strongly\nFavor"),
+                   labels = c("Strongly\nOppose (1)", "Somewhat\nOppose (2)", "Neutral (3)", "Somewhat\nFavor (4)", "Strongly\nFavor (5)"),
                    expand = expansion(add = c(0,1))) +
   scale_fill_discrete(name = "", labels = c("Denial", "Overt")) +
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
@@ -325,7 +325,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
         legend.text = element_text(size = 12.5)) 
 
 
-#ggsave("avg_escalation_qatar.pdf")
+ggsave("avg_escalation_qatar.png", width = 6, height = 4, unit = "in")
 
 
 

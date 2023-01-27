@@ -69,7 +69,7 @@ p = ggplot(med_props,
                 y = estimate,
                 label = round(estimate,2)),
             vjust = 2) +
-  ggtitle("Qatar: Proportion Mediated") +
+  ggtitle("") +
   xlab("") +
   ylab("")+
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
@@ -163,7 +163,7 @@ med_table = paste('<!DOCTYPE html>
   </tr>
   <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
   <tr>
-    <th rowspan ="3">Controls</th> 
+    <th rowspan ="3"> Dispositional Controls</th> 
     <td >Reputation</td>
     <td>', round(med.rep_dis$d0,3),'</td>
     <td>', round(med.rep_dis$z0,3),'</td>
