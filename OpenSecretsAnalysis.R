@@ -4,7 +4,8 @@ library(ggplot2)
 library(dplyr)
 library(httr)
 library(data.table)
-
+library(vtable)
+library(stargazer)
 
 
 ###Importing and Processing Survey Data###
@@ -182,8 +183,52 @@ df$republican = ifelse(df$political_party == 9 | df$political_party == 10 | df$p
 df$democrat = ifelse(df$political_party == 1 | df$political_party == 2 | df$political_party == 3 | df$political_party == 6, 1, 0)
 
 ###Analysis###
+# Summary Statistics
+#Iran
+df_sum = df %>% dplyr::select(esca_scaled, denial, adversary, reputation_scaled, insulting, ambiguity, MA_scaled,NC_scaled, GovTrust, 
+                              NewsTrust, IntTrust, Read.FP)
+df_sum$insulting = as.numeric(df$insulting)
+df_sum$ambiguity = as.numeric(df$ambiguity)
+df_sum_i = df_sum[df_sum$adversary==1]
+df_sum_i$adversary = NULL
+stargazer(df_sum_i, summary = TRUE, type = 'html', out ='Figures/Iran_Sum.html', digits = 2, 
+          covariate.labels = c('Escalation Preference', 'Denial', 'Reputation', 'Insult', 
+                               'Certainty', 'Militant Assertiveness', 'National Chauvinism', 
+                               'Trust in Gov.', 'Trust in News', 'International Trust', 'Foreign Policy Interest'),
+          summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
+BROWSE('Figures/Iran_Sum.html')
+
+#Qatar 
+df_sum_q = df_sum[df_sum$adversary==0]
+df_sum_q$adversary = NULL
+stargazer(df_sum_q, summary = TRUE, type = 'html', out ='Figures/Qatar_Sum.html', digits = 2, 
+          covariate.labels = c('Escalation Preference', 'Denial', 'Reputation', 'Insult', 
+                               'Certainty', 'Militant Assertiveness', 'National Chauvinism', 
+                               'Trust in Gov.', 'Trust in News', 'International Trust', 'Foreign Policy Interest'),
+          summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
+BROWSE('Figures/Qatar_Sum.html')
+
+# Iran Demographic 
+df_sum_dem = df %>% dplyr::select(adversary, age, male, hhi, white, black, education, republican, democrat)
+df_sum_dem_i = df_sum_dem[df_sum_dem$adversary==1]
+df_sum_dem_i$adversary = NULL
+stargazer(df_sum_dem_i, summary = TRUE, type = 'html', out ='Figures/Iran_Sum_Dem.html', digits = 2, 
+          covariate.labels = c('Age', 'Male', 'Household Income', 'White', 'Black', 'Education','Republican', 'Democrat'),
+          summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
+BROWSE('Figures/Iran_Sum_Dem.html')
+
+# Qatar Demographic
+df_sum_dem = df %>% dplyr::select(adversary, age, male, hhi, white, black, education, republican, democrat)
+df_sum_dem_q = df_sum_dem[df_sum_dem$adversary==0]
+df_sum_dem_q$adversary = NULL
+stargazer(df_sum_dem_q, summary = TRUE, type = 'html', out ='Figures/Qatar_Sum_Dem.html', digits = 2, 
+          covariate.labels = c('Age', 'Male', 'Household Income', 'White', 'Black', 'Education','Republican', 'Democrat'),
+          summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
+BROWSE('Figures/Qatar_Sum_Dem.html')
 
 #Linear Models
+
+
 df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrust, 
                               NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP,
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, 

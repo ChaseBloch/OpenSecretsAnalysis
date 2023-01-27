@@ -19,7 +19,7 @@ df_i = df[df$adversary == 1,]
 ###Mediation Analysis with Dispositional Controls###
 ##########################
 df_dis = df_i %>% dplyr::select(denial, esca_scaled, MA_scaled, GovTrust, 
-                              NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP,
+                              NewsTrust, IntTrust, NC_scaled, Read.FP,
                               reputation_scaled, ambiguity, insulting)
 df_dis = df_dis[complete.cases(df_dis),]
 
