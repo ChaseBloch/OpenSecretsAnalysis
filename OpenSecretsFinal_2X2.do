@@ -9,14 +9,14 @@ destring *, ignore("NA") replace
 eststo: reg esca_scaled i.denial##i.adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp 
 estimates store m1
 margins, dydx(denial) at(adversary = (0 1))
-marginsplot, recast(bar) title("") xtitle("") xlabel(0 "Qatar" 1 "Iran") yscale(range(-25 0)) ylabel(0 -5 -10 -15 -20 -25)
+marginsplot, recast(line) title("") xtitle("") xlabel(-.25 " " 0 "Qatar" 1 "Iran" 1.25 " ", notick) 
 graph export ME_Escalation.jpg, replace width(4000) height(3000)
 
 eststo: reg reputation_scaled denial##adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp  
 eststo: ologit ambiguity i.denial##i.adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp
 estimates store m2
 margins adversary, dydx(denial) predict(xb)
-marginsplot, recast(bar) title("") xtitle("") xlabel(0 "Qatar" 1 "Iran") yscale(range(-4 0)) ylabel(0 -1 -2 -3 -4)
+marginsplot, recast(line) title("") xtitle("") xlabel(-.25 " " 0 "Qatar" 1 "Iran" 1.25 " ", notick)
 graph export ME_Certainty.jpg, replace width(4000) height(3000) 
   
 eststo: ologit insulting denial##adversary ma_scaled nc_scaled govtrust newstrust inttrust readfp  
