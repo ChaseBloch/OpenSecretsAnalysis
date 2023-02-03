@@ -24,7 +24,8 @@ df_i = df[df$adversary == 1,]
 # Subset relevant variables and remove NA values
 df_dis = df_i %>% dplyr::select(denial, esca_scaled, MA_scaled, GovTrust, 
                               NewsTrust, IntTrust, NC_scaled, Read.FP,
-                              reputation_scaled, ambiguity, insulting)
+                              reputation_scaled, ambiguity, insulting, age, male, 
+                              hhi, white, education, republican, democrat)
 df_dis = df_dis[complete.cases(df_dis),]
 
 # Run models with mediators as the DV
@@ -39,17 +40,20 @@ m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust
 
 # Run mediate function for reputation
 med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                   robustSE = TRUE, sims = 400)
+                   robustSE = TRUE, sims = 1000)
+medsens_rep <- medsens(med.rep_dis, rho.by = 0.1)
 summary(med.rep_dis)
+summary(medsens_rep)
 plot(med.rep_dis)
+plot(medsens_rep)
 
 # Run mediate function for ambiguity (certainty)
-med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 100, boot = TRUE)
+med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 175, boot = TRUE)
 summary(med.amb_dis)
 plot(med.amb_dis)
 
 # Run mediate function for insult
-med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 400, boot = TRUE)
+med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 1000, boot = TRUE)
 summary(med.ins_dis)
 plot(med.ins_dis)
 
@@ -86,11 +90,16 @@ ggsave("Figures/prop_med_iran.png", width = 6, height = 4, unit = "in")
 
 # Multi-mediation Imai and Yamamoto
 # Ambiguity
+
+df_dis$ambiguity = as.numeric(df_dis$ambiguity)
+df_dis$insulting = as.numeric(df_dis$insulting)
+
 covariates = c('MA_scaled', 'GovTrust', 'NewsTrust', 'IntTrust', 'NC_scaled', 'Read.FP')
 meds = c('reputation_scaled','insulting')
 mm_amb <- multimed("esca_scaled", "ambiguity", meds, "denial", covariates, 
                     data=df_dis, sims=1000)
 summary(mm_amb)
+plot(mm_amb)
 
 lims <- c(-20,20)
 plot(0, 0, type="n", main="Point Estimates",
@@ -118,6 +127,7 @@ meds = c('ambiguity','insulting')
 mm_rep <- multimed("esca_scaled", "reputation_scaled", meds, "denial", covariates, 
                    data=df_dis, sims=1000)
 summary(mm_rep)
+plot(mm_rep)
 
 lims <- c(-20,20)
 plot(0, 0, type="n", main="Point Estimates",
@@ -141,10 +151,11 @@ axis(side = 2, labels = c(
 
 # Insulting
 covariates = c('MA_scaled', 'GovTrust', 'NewsTrust', 'IntTrust', 'NC_scaled', 'Read.FP')
-meds = c('ambiguity','reputation_scaled')
+meds = c('ambiguity', 'reputation_scaled')
 mm_ins <- multimed("esca_scaled", "insulting", meds, "denial", covariates, 
                    data=df_dis, sims=1000)
 summary(mm_ins)
+plot(mm_ins)
 
 lims <- c(-20,20)
 plot(0, 0, type="n", main="Point Estimates",
@@ -166,70 +177,46 @@ axis(side = 2, labels = c(
   expression(paste("Total (", bar(tau), ")"))),
   at = c(4,3,2,1), las = 2)
 
+df$ambiguity = as.factor(df$ambiguity)
+df$insulting = as.factor(df$insulting)
+
 # Multi-mediation Zhou and Yamamoto
-# Reputation then insulting
-mediators <- list('ambiguity','reputation_scaled', 'insulting')
-M_0 <- lm(esca_scaled ~ denial + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)  
-M_1 <- lm(esca_scaled ~ denial + ambiguity + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-M_2 <- lm(esca_scaled ~ denial + ambiguity + reputation_scaled + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-M_3 <- lm(esca_scaled ~ denial + ambiguity + reputation_scaled + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-models <- list(M_0, M_1, M_2, M_3)
-os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 500)
-summary(os_paths)
-
-# Insulting then reputation
-mediators <- list('ambiguity','insulting', 'reputation_scaled')
-M_0 <- lm(esca_scaled ~ denial + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)  
-M_1 <- lm(esca_scaled ~ denial + ambiguity + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-M_2 <- lm(esca_scaled ~ denial + ambiguity + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-M_3 <- lm(esca_scaled ~ denial + ambiguity + reputation_scaled + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-models <- list(M_0, M_1, M_2, M_3)
-os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 500)
-summary(os_paths)
-
-# Insulting and reputation grouped
+# GBM models ambiguity --> reputation
 m1 <- c("ambiguity")
-m2 <- c('reputation_scaled','insulting')
+m2 <- c('reputation_scaled')
 
 mediators <- list(m1,m2)
-M_0 <- lm(esca_scaled ~ denial + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)  
-M_1 <- lm(esca_scaled ~ denial + ambiguity + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-M_2 <- lm(esca_scaled ~ denial + ambiguity + reputation_scaled + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis)
-models <- list(M_0, M_1, M_2)
-os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 500)
-summary(os_paths)
 
-# GBM models
-mediators <- list('ambiguity','reputation_scaled', 'insulting')
 M_0 <- gbm(esca_scaled ~ denial + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)  
 M_1 <- gbm(esca_scaled ~ denial + ambiguity + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)
 M_2 <- gbm(esca_scaled ~ denial + ambiguity + reputation_scaled + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)
-M_3 <- gbm(esca_scaled ~ denial + ambiguity + reputation_scaled + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)
-models <- list(M_0, M_1, M_2, M_3)
-os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 500)
+models <- list(M_0, M_1, M_2)
+os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 1000)
 summary(os_paths)
+plot(os_paths)
 
-# Propensity scores check
+# Propensity scores check for ambiguity --> reputation 
 formula_ps <- denial ~ MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP 
 gbm_ps <- gbm(formula_ps, data = df_dis, distribution = "gaussian", interaction.depth = 3)
 paths2 <- paths(a = 'denial', y = 'esca_scaled', m = mediators, ps_model = gbm_ps, models, data = df_dis, nboot = 500)  
 summary(paths2)
 plot(paths2)
 
-# GBM models reputation and insult grouped
+# GBM models ambiguity --> insulting
 m1 <- c("ambiguity")
-m2 <- c('reputation_scaled','insulting')
+m2 <- c('insulting')
 
 mediators <- list(m1,m2)
 
 M_0 <- gbm(esca_scaled ~ denial + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)  
 M_1 <- gbm(esca_scaled ~ denial + ambiguity + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)
-M_2 <- gbm(esca_scaled ~ denial + ambiguity + reputation_scaled + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)
+M_2 <- gbm(esca_scaled ~ denial + ambiguity + insulting + MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP , data = df_dis, distribution = "gaussian", interaction.depth = 3)
 models <- list(M_0, M_1, M_2)
-os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 500)
+os_paths <- paths(a = 'denial', y = 'esca_scaled', m = mediators, models, data = df_dis, nboot = 1000)
 summary(os_paths)
+plot(os_paths)
 
-# Propensity scores check for grouped 
+# Propensity scores check for ambiguity --> insulting
 formula_ps <- denial ~ MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP 
 gbm_ps <- gbm(formula_ps, data = df_dis, distribution = "gaussian", interaction.depth = 3)
 paths2 <- paths(a = 'denial', y = 'esca_scaled', m = mediators, ps_model = gbm_ps, models, data = df_dis, nboot = 500)  
