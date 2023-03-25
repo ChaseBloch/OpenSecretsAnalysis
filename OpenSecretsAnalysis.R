@@ -25,7 +25,6 @@ df2 <- fetch_survey(surveyID = surveys$id[2],verbose =TRUE,force_request = TRUE)
 df3 <- rbindlist(list(df1, df2), fill = TRUE)
 names(df3) <- gsub(":", "", names(df3))
 names(df3) <- make.names(names(df3), unique=TRUE)
-
 ###Attention Checks###
 
 # Drop based on first attention check
@@ -33,6 +32,12 @@ df <- df3[
   !is.na(df3$AC1_1) & 
     !is.na(df3$AC1_2) & 
     df3$Status != "Survey Preview" & df3$Finished == "TRUE",]
+
+# Convert string NAs to Actual NAs
+df[] <- lapply(df, function(x) {
+  is.na(levels(x)) <- levels(x) == "NA"
+  x
+})
 
 # Drop based on second attention check
 df = df[df$i.AC2 == "The United States and Iran" | df$q.AC2 == "The United States and Qatar",]
@@ -292,9 +297,9 @@ ns = c(length(df_i$war[df_i$denial == 1]),
 
 # Create data frame with labels and data
 treat = c("Covert", "Covert","Covert","Covert", "Overt", "Overt", "Overt", "Overt")
-type = c("War", "Airstrike", "Sanctions", "Diplomacy", "War", "Airstrike", "Sanctions", "Diplomacy")
+type = c("War", "Airstrike", "Sanctions", "Condemn", "War", "Airstrike", "Sanctions", "Condemn")
 type = factor(type, levels = c(
-  "Diplomacy",
+  "Condemn",
   "Sanctions",
   "Airstrike",
   "War"
@@ -364,9 +369,9 @@ ns = c(length(df_q$war[df_q$denial == 1]),
 
 # Create data frame with labels and data
 treat = c("Covert", "Covert","Covert","Covert", "Overt", "Overt", "Overt", "Overt")
-type = c("War", "Airstrike", "Sanctions", "Diplomacy", "War", "Airstrike", "Sanctions", "Diplomacy")
+type = c("War", "Airstrike", "Sanctions", "Condemn", "War", "Airstrike", "Sanctions", "Condemn")
 type = factor(type, levels = c(
-  "Diplomacy",
+  "Condemn",
   "Sanctions",
   "Airstrike",
   "War"
@@ -395,7 +400,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
         axis.text.x = element_text(size = 12.5),
         legend.text = element_text(size = 12.5)) 
-ggsave("avg_escalation_qatar.png", width = 6, height = 4, unit = "in")
+ggsave("Figures/avg_escalation_qatar.png", width = 6, height = 4, unit = "in")
 
 
 
