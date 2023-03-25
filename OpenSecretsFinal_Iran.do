@@ -111,3 +111,16 @@ esttab using Iran_Gov_Interaction.rtf, replace b(3) se(3) noconstant  star(* .10
 	coeflabels(denial "Denial" ma_scaled "Militant Assertiveness" nc_scaled "National Chauvinism" govtrust "Trust in Gov." newstrust "Trust in News" inttrust 		"International Trust" readfp "Foreign Policy Interest") ///
 	mtitles("Escalation" "Reputation" "Insult" "Certainty")
 eststo clear
+
+*Demographic model with party ID interaction
+eststo: reg esca_scaled denial##democrat denial##republican age male hhi white education democrat
+eststo: reg reputation_scaled denial##democrat denial##republican age male hhi white education democrat
+eststo: ologit ambiguity denial##democrat denial##republican age male hhi white education democrat
+eststo: ologit insulting denial##democrat denial##republican age male hhi white education democrat
+
+esttab using Iran_Party_Interaction.rtf, replace b(3) se(3) noconstant  star(* .10 ** .05 *** .01)  ///
+	title("Iran: Escalation Preference and Mediators with Demographic Controls") ///
+	coeflabels(denial "Denial" age "Age" male "Male" hhi "Household Income" white "White" education "Education" republican "Republican" democrat "Democrat") ///
+	mtitles("Escalation" "Reputation" "Certainty" "Insulting")
+eststo clear
+
