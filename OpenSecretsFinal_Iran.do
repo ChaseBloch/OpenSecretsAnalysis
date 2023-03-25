@@ -114,10 +114,10 @@ esttab using Iran_Gov_Interaction.rtf, replace b(3) se(3) noconstant  star(* .10
 eststo clear
 
 *Demographic model with party ID interaction
-eststo: reg esca_scaled denial##democrat denial##republican age male hhi white education
-eststo: reg reputation_scaled denial##democrat denial##republican age male hhi white education
-eststo: ologit ambiguity denial##democrat denial##republican age male hhi white education
-eststo: ologit insulting denial##democrat denial##republican age male hhi white education
+eststo: reg esca_scaled denial##republican age male hhi white education
+eststo: reg reputation_scaled denial##republican age male hhi white education
+eststo: ologit ambiguity denial##republican age male hhi white education
+eststo: ologit insulting denial##republican age male hhi white education
 
 esttab using Iran_Party_Interaction.rtf, replace b(3) se(3) noconstant  star(* .10 ** .05 *** .01)  ///
 	title("Iran: Escalation Preference and Mediators with Demographic Controls") ///
