@@ -268,9 +268,9 @@ means = c(mean(df_i$war[df_i$denial == 1],na.rm = TRUE),
           mean(df_i$sanctions[df_i$denial == 1],na.rm = TRUE), 
           mean(df_i$diplomacy[df_i$denial == 1],na.rm = TRUE),
           mean(df_i$war[df_i$denial == 0],na.rm = TRUE), 
-                   mean(df_i$airstrike[df_i$denial == 0],na.rm = TRUE),
-                   mean(df_i$sanctions[df_i$denial == 0],na.rm = TRUE), 
-                   mean(df_i$diplomacy[df_i$denial == 0],na.rm = TRUE)
+          mean(df_i$airstrike[df_i$denial == 0],na.rm = TRUE),
+          mean(df_i$sanctions[df_i$denial == 0],na.rm = TRUE), 
+          mean(df_i$diplomacy[df_i$denial == 0],na.rm = TRUE)
           )
 
 # Calculate standard deviations of relevant variables
@@ -379,7 +379,7 @@ type = factor(type, levels = c(
 forgraph = data.frame(means, treat, type, sds, ns)
 forgraph$error = qt(0.975, df=ns-1)*sds/sqrt(ns)
 
-# Plot and save barplot for Iran
+# Plot and save barplot for Qatar
 ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(type)) +
   geom_bar(stat = "identity", 
            position = position_dodge(width = 0.9)) +
