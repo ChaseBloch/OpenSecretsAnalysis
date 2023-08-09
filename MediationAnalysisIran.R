@@ -11,7 +11,7 @@ library(gbm)
 set.seed(1234)
 
 setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis")
-df = read.csv("2X2Data_Final.csv")
+df = read.csv("IranMoreCertainty_Final.csv")
 
 # Factor ambiguity and insulting
 df$ambiguity = as.factor(df$ambiguity)
@@ -42,7 +42,7 @@ m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust
 
 # Run mediate function for reputation
 med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                   robustSE = TRUE, sims = 1000)
+                   robustSE = TRUE, sims = 3000)
 medsens_rep <- medsens(med.rep_dis, rho.by = 0.1)
 summary(med.rep_dis)
 summary(medsens_rep)
@@ -50,12 +50,12 @@ plot(med.rep_dis)
 plot(medsens_rep)
 
 # Run mediate function for ambiguity (certainty)
-med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 175, boot = TRUE)
+med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 3000, boot = FALSE)
 summary(med.amb_dis)
 plot(med.amb_dis)
 
 # Run mediate function for insult
-med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 1000, boot = TRUE)
+med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 3000, boot = TRUE)
 summary(med.ins_dis)
 plot(med.ins_dis)
 
@@ -88,7 +88,7 @@ p = ggplot(med_props,
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
         axis.text.x = element_text(size = 12.5)) +
   coord_flip()
-ggsave("Figures/prop_med_iran.png", width = 6, height = 4, unit = "in")
+ggsave("Figures2/prop_med_iran.png", width = 6, height = 4, unit = "in")
 
 
 ##########################
@@ -116,7 +116,7 @@ summary(med.rep)
 plot(med.rep)
 
 # Run mediate function for ambiguity (certainty)
-med.amb <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 100, boot = TRUE)
+med.amb <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 1000, boot = FALSE)
 summary(med.amb)
 plot(med.amb)
 
@@ -151,7 +151,7 @@ summary(med.rep_dem)
 plot(med.rep_dem)
 
 # Run mediate function for ambiguity (certainty)
-med.amb_dem <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 100, boot = TRUE)
+med.amb_dem <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 200, boot = FALSE)
 summary(med.amb_dem)
 plot(med.amb_dem)
 
@@ -209,29 +209,6 @@ med_table = paste('<!DOCTYPE html>
   </tr>
   <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
   <tr>
-    <th rowspan ="3"> No Controls</th> 
-    <td>Reputation</td>
-    <td>', round(med.rep$d0,3),'</td>
-    <td>', round(med.rep$z0,3),'</td>
-    <td>', round(med.rep$tau.coef,3),'</td>
-    <td>', round(med.rep$n0,3),' </td>
-  </tr>
-  <tr style="background-color: #D6EEEE">
-    <td>Ambiguity</td>
-    <td>', round(med.amb$d0,3),'</td>
-    <td>', round(med.amb$z0,3),'</td>
-    <td>', round(med.amb$tau.coef,3),'</td>
-    <td>', round(med.amb$n0,3),' </td>
-  </tr>
-  <tr>
-    <td>Insulting</td>
-   <td>', round(med.ins$d0,3),'</td>
-    <td>', round(med.ins$z0,3),'</td>
-    <td>', round(med.ins$tau.coef,3),'</td>
-    <td>', round(med.ins$n0,3),' </td>
-  </tr>
-  <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
-  <tr>
     <th rowspan ="3">Demographic Controls</th> 
     <td>Reputation</td>
     <td>', round(med.rep_dem$d0,3),'</td>
@@ -260,8 +237,8 @@ med_table = paste('<!DOCTYPE html>
   
   </body>
   </html>', sep =" ")
-write(med_table, "med_table_iran.html")
-BROWSE("med_table_iran.html")
+write(med_table, "Figures2/med_table_iran.html")
+BROWSE("Figures2/med_table_iran.html")
 
 # Multi-mediation Imai and Yamamoto
 # Ambiguity
