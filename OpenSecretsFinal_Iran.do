@@ -1,8 +1,8 @@
 clear all
 
-cd "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\Figures\"
+cd "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\Figures2\"
 
-import delimited "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\2X2Data_Final.csv"
+import delimited "C:\Users\csb257\Documents\GitHub\OpenSecretsAnalysis\IranMoreCertainty_Final.csv"
 destring *, ignore("NA") replace
 
 ***Creating Tables for Iran***
