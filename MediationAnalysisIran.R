@@ -14,7 +14,9 @@ setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis
 df = read.csv("IranMoreCertainty_Final.csv")
 
 # Factor ambiguity and insulting
-df$ambiguity = as.factor(df$ambiguity)
+df$ambiguity[df$ambiguity == 3 | df$ambiguity == 2 | df$ambiguity == 1] = 0
+df$ambiguity[df$ambiguity == 4] = 1
+#df$ambiguity = as.factor(df$ambiguity)
 df$insulting = as.factor(df$insulting)
 
 # Subset Iran data
@@ -32,7 +34,8 @@ df_dis = df_dis[complete.cases(df_dis),]
 
 # Run models with mediators as the DV
 m_rep = lm(reputation_scaled ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
-m_amb = polr(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
+#m_amb = polr(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
+m_amb = glm(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, family = "binomial")
 m_ins = polr(insulting ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
 
 # Run models with mediators as the IVs
@@ -41,21 +44,20 @@ m2_amb = lm(esca_scaled ~ ambiguity + denial +  MA_scaled + GovTrust + NewsTrust
 m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
 
 # Run mediate function for reputation
-med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                   robustSE = TRUE, sims = 3000)
+med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", sims = 100, boot = FALSE)
 medsens_rep <- medsens(med.rep_dis, rho.by = 0.1)
 summary(med.rep_dis)
-summary(medsens_rep)
+#summary(medsens_rep)
 plot(med.rep_dis)
-plot(medsens_rep)
+#plot(medsens_rep)
 
 # Run mediate function for ambiguity (certainty)
-med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 3000, boot = FALSE)
+med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 3000, boot = TRUE)
 summary(med.amb_dis)
 plot(med.amb_dis)
 
 # Run mediate function for insult
-med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 3000, boot = TRUE)
+med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 100, boot = FALSE)
 summary(med.ins_dis)
 plot(med.ins_dis)
 
