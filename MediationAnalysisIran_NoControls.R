@@ -15,8 +15,8 @@ df = read.csv("2X2Data_Final.csv")
 df$ambiguity = as.factor(df$ambiguity)
 df$insulting = as.factor(df$insulting)
 
-# Subset Qatar data
-df_i = df[df$adversary == 0,]
+# Subset iran data
+df_i = df[df$adversary == 1,]
 
 ###Mediation Analysis with Dispositional Controls###
 ##########################
@@ -38,20 +38,28 @@ m2_amb = lm(esca_scaled ~ ambiguity + denial +  MA_scaled + GovTrust + NewsTrust
 m2_ins = lm(esca_scaled ~ insulting + denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
 
 # Run mediate function for reputation
-med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                       robustSE = TRUE, sims = 500)
+med.rep_dis <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", sims = 500, boot = FALSE)
 summary(med.rep_dis)
+pdf(file = 'FinalScripts&Figures/MediationRepDisiran.pdf')
+par(mar = c(4.1, 4.4, 4.1, 1.9), xaxs="i", yaxs="i")
 plot(med.rep_dis)
+dev.off()
 
 # Run mediate function for ambiguity (certainty)
 med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 500, boot = FALSE)
 summary(med.amb_dis)
+pdf(file = 'FinalScripts&Figures/MediationCertDisiran.pdf')
+par(mar = c(4.1, 4.4, 4.1, 1.9), xaxs="i", yaxs="i")
 plot(med.amb_dis)
+dev.off()
 
 # Run mediate function for insult
 med.ins_dis <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 500, boot = FALSE)
 summary(med.ins_dis)
+pdf(file = 'FinalScripts&Figures/MediationInsDisiran.pdf')
+par(mar = c(4.1, 4.4, 4.1, 1.9), xaxs="i", yaxs="i")
 plot(med.ins_dis)
+dev.off()
 
 # Calculate estimate and confidence bounds for proportion mediated
 variable = c("Reputation", "Certainty", "Insult")
@@ -83,41 +91,7 @@ p = ggplot(med_props,
         axis.text.x = element_text(size = 12.5)) +
   coord_flip()
 
-#ggsave("New&EdittedFigures/prop_med_qatar.png", width = 6, height = 4, unit = "in")
-##########################
-###Mediation Analysis with no Controls###
-##########################
-
-# # Subset relevant variables and remove NA values
-# df_dis = df_i %>% dplyr::select(denial, esca_scaled, ambiguity, insulting, reputation_scaled)
-# df_dis = df_dis[complete.cases(df_dis),]
-# 
-# # Run models with mediators as the DV
-# m_rep = lm(reputation_scaled ~ denial, data = df_dis)
-# m_amb = polr(ambiguity ~ denial, data = df_dis, method = "logistic", Hess = TRUE)
-# m_ins = polr(insulting ~ denial, data = df_dis, method = "logistic", Hess = TRUE)
-# 
-# # Run models with mediators as the IVs
-# m2_rep = lm(esca_scaled ~ reputation_scaled + denial, data = df_dis)
-# m2_amb = lm(esca_scaled ~ ambiguity + denial, data = df_dis)
-# m2_ins = lm(esca_scaled ~ insulting + denial, data = df_dis)
-# 
-# # Run mediate function for reputation
-# med.rep <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-#                    robustSE = TRUE, sims = 500)
-# summary(med.rep)
-# plot(med.rep)
-# 
-# # Run mediate function for ambiguity (certainty)
-# med.amb <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 500, boot = FALSE)
-# summary(med.amb)
-# plot(med.amb)
-# 
-# # Run mediate function for insult
-# med.ins <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 500, boot = FALSE)
-# summary(med.ins)
-# plot(med.ins)
-
+ggsave("FinalScripts&Figures/prop_med_iran.png", width = 6, height = 4, unit = "in")
 
 ##########################
 ###Mediation Analysis with demographic Controls###
@@ -138,20 +112,28 @@ m2_amb = lm(esca_scaled ~ ambiguity + denial + age + male + hhi + white + educat
 m2_ins = lm(esca_scaled ~ insulting + denial + age + male + hhi + white + education + republican + democrat, data = df_dis)
 
 # Run mediate function for reputation
-med.rep_dem <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", #Need to match variables here with models above
-                       robustSE = TRUE, sims = 500)
+med.rep_dem <- mediate(m_rep, m2_rep, treat = "denial", mediator = "reputation_scaled", sims = 500, boot = FALSE)
 summary(med.rep_dem)
+pdf(file = 'FinalScripts&Figures/MediationRepDemiran.pdf')
+par(mar = c(4.1, 4.4, 4.1, 1.9), xaxs="i", yaxs="i")
 plot(med.rep_dem)
+dev.off()
 
 # Run mediate function for ambiguity (certainty)
 med.amb_dem <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 500, boot = FALSE)
 summary(med.amb_dem)
+pdf(file = 'FinalScripts&Figures/MediationCertDemiran.pdf')
+par(mar = c(4.1, 4.4, 4.1, 1.9), xaxs="i", yaxs="i")
 plot(med.amb_dem)
+dev.off()
 
 # Run mediate function for insult
 med.ins_dem <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 500, boot = FALSE)
 summary(med.ins_dem)
+pdf(file = 'FinalScripts&Figures/MediationInsDemiran.pdf')
+par(mar = c(4.1, 4.4, 4.1, 1.9), xaxs="i", yaxs="i")
 plot(med.ins_dem)
+dev.off()
 ##########################
 
 # Create HTML table of full mediation results
@@ -163,7 +145,7 @@ med_table = paste('<!DOCTYPE html>
 </style>
   <body>
   
-  <h2>Qatar Experiment: Mediation Effects</h2>
+  <h2>iran Experiment: Mediation Effects</h2>
   
   <table style="width:35%">
   <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
@@ -228,8 +210,8 @@ med_table = paste('<!DOCTYPE html>
   
   </body>
   </html>', sep =" ")
-#write(med_table, "New&EdittedFigures/med_table_qatar.html")
-#BROWSE("New&EdittedFigures/med_table_qatar.html")
+write(med_table, "FinalScripts&Figures/med_table_iran.html")
+BROWSE("FinalScripts&Figures/med_table_iran.html")
 
 
 # Multi-mediation Imai and Yamamoto

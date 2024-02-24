@@ -10,13 +10,13 @@ library(gbm)
 
 set.seed(1234)
 
-setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis")
+setwd("D:/My Drive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis")
 df = read.csv("IranMoreCertainty_Final.csv")
 
 # Factor ambiguity and insulting
-df$ambiguity[df$ambiguity == 3 | df$ambiguity == 2 | df$ambiguity == 1] = 0
-df$ambiguity[df$ambiguity == 4] = 1
-#df$ambiguity = as.factor(df$ambiguity)
+#df$ambiguity[df$ambiguity == 3 | df$ambiguity == 2 | df$ambiguity == 1] = 0
+#df$ambiguity[df$ambiguity == 4] = 1
+df$ambiguity = as.factor(df$ambiguity)
 df$insulting = as.factor(df$insulting)
 
 # Subset Iran data
@@ -34,8 +34,8 @@ df_dis = df_dis[complete.cases(df_dis),]
 
 # Run models with mediators as the DV
 m_rep = lm(reputation_scaled ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis)
-#m_amb = polr(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
-m_amb = glm(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, family = "binomial")
+m_amb = polr(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
+#m_amb = glm(ambiguity ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, family = "binomial")
 m_ins = polr(insulting ~ denial +  MA_scaled + GovTrust + NewsTrust + IntTrust + NC_scaled + Read.FP, data = df_dis, method = "logistic", Hess = TRUE)
 
 # Run models with mediators as the IVs
@@ -52,7 +52,7 @@ plot(med.rep_dis)
 #plot(medsens_rep)
 
 # Run mediate function for ambiguity (certainty)
-med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 3000, boot = TRUE)
+med.amb_dis <- mediate(m_amb, m2_amb, treat = "denial", mediator = "ambiguity", sims = 500, boot = FALSE)
 summary(med.amb_dis)
 plot(med.amb_dis)
 
@@ -90,7 +90,7 @@ p = ggplot(med_props,
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
         axis.text.x = element_text(size = 12.5)) +
   coord_flip()
-ggsave("Figures2/prop_med_iran.png", width = 6, height = 4, unit = "in")
+#ggsave("New&EdittedFigures/prop_med_iran.png", width = 6, height = 4, unit = "in")
 
 
 ##########################
@@ -158,7 +158,7 @@ summary(med.amb_dem)
 plot(med.amb_dem)
 
 # Run mediate function for insult
-med.ins_dem <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 200, boot =TRUE)
+med.ins_dem <- mediate(m_ins, m2_ins, treat = "denial", mediator = "insulting", sims = 500, boot = FALSE)
 summary(med.ins_dem)
 plot(med.ins_dem)
 ##########################
@@ -174,30 +174,33 @@ med_table = paste('<!DOCTYPE html>
 </style>
   <body>
   
-  <h2>Iran: Mediation Effects</h2>
+  <h2>Iran Additional Experiment: Mediation Effects</h2>
   
   <table style="width:35%">
-  <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
+  <tr><th colspan="7" style = "border-bottom: 1px solid black"></th></tr>
   <tr align = "left">
     <th style="width:15%"></th>
     <th style="width:15%">Mediator</th>
     <th style="width:15%">ACME</th>
+    <th style="width:15%">ACME CI</th>
     <th style="width:15%">Direct Effect</th>
     <th style="width:15%">Total Effect</th>
     <th style="width:15%">Proportion Mediated</th>
   </tr>
-  <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
+  <tr><th colspan="7" style = "border-bottom: 1px solid black"></th></tr>
   <tr>
     <th rowspan ="3">Dispositional Controls</th> 
     <td >Reputation</td>
     <td>', round(med.rep_dis$d0,3),'</td>
+    <td>', round(med.rep_dis$d0.ci[1],3),',',round(med.rep_dis$d0.ci[2],3),'</td>
     <td>', round(med.rep_dis$z0,3),'</td>
     <td>', round(med.rep_dis$tau.coef,3),'</td>
     <td>', round(med.rep_dis$n0,3),' </td>
   </tr>
   <tr style="background-color: #D6EEEE">
-    <td>Ambiguity</td>
+    <td>Certainty</td>
     <td>', round(med.amb_dis$d0,3),'</td>
+    <td>', round(med.amb_dis$d0.ci[1],3), ',',round(med.amb_dis$d0.ci[2],3),'</td>
     <td>', round(med.amb_dis$z0,3),'</td>
     <td>', round(med.amb_dis$tau.coef,3),'</td>
     <td>', round(med.amb_dis$n0,3),' </td>
@@ -205,22 +208,25 @@ med_table = paste('<!DOCTYPE html>
   <tr>
     <td>Insulting</td>
    <td>', round(med.ins_dis$d0,3),'</td>
+   <td>', round(med.ins_dis$d0.ci[1]),',',round(med.ins_dis$d0.ci[2],3),'</td>
     <td>', round(med.ins_dis$z0,3),'</td>
     <td>', round(med.ins_dis$tau.coef,3),'</td>
     <td>', round(med.ins_dis$n0,3),' </td>
   </tr>
-  <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
+  <tr><th colspan="7" style = "border-bottom: 1px solid black"></th></tr>
   <tr>
     <th rowspan ="3">Demographic Controls</th> 
     <td>Reputation</td>
     <td>', round(med.rep_dem$d0,3),'</td>
+    <td>', round(med.rep_dem$d0.ci[1],3),',',round(med.rep_dem$d0.ci[2],3),'</td>
     <td>', round(med.rep_dem$z0,3),'</td>
     <td>', round(med.rep_dem$tau.coef,3),'</td>
     <td>', round(med.rep_dem$n0,3),' </td>
   </tr>
   <tr style="background-color: #D6EEEE">
-    <td>Ambiguity</td>
+    <td>Certainty</td>
     <td>', round(med.amb_dem$d0,3),'</td>
+    <td>', round(med.amb_dem$d0.ci[1],3),',',round(med.amb_dem$d0.ci[2],3),'</td>
     <td>', round(med.amb_dem$z0,3),'</td>
     <td>', round(med.amb_dem$tau.coef,3),'</td>
     <td>', round(med.amb_dem$n0,3),' </td>
@@ -228,22 +234,29 @@ med_table = paste('<!DOCTYPE html>
   <tr>
     <td>Insulting</td>
     <td>', round(med.ins_dem$d0,3),'</td>
+    <td>', round(med.ins_dem$d0.ci[1],3),',',round(med.ins_dem$d0.ci[2],3),'</td>
     <td>', round(med.ins_dem$z0,3),'</td>
     <td>', round(med.ins_dem$tau.coef,3),'</td>
     <td>', round(med.ins_dem$n0,3),' </td>
   </tr>
-  <tr><th colspan="6" style = "border-bottom: 1px solid black"></th></tr>
+  <tr><th colspan="7" style = "border-bottom: 1px solid black"></th></tr>
   </table>
   
   <p></p>
   
   </body>
   </html>', sep =" ")
-write(med_table, "Figures2/med_table_iran.html")
-BROWSE("Figures2/med_table_iran.html")
+write(med_table, "New&EdittedFigures/med_table_iran_v2.html")
+BROWSE("New&EdittedFigures/med_table_iran_v2.html")
 
 # Multi-mediation Imai and Yamamoto
 # Ambiguity
+df_dis = df_i %>% dplyr::select(denial, esca_scaled, MA_scaled, GovTrust, 
+                                NewsTrust, IntTrust, NC_scaled, Read.FP,
+                                reputation_scaled, ambiguity, insulting, age, male, 
+                                hhi, white, education, republican, democrat)
+df_dis = df_dis[complete.cases(df_dis),]
+
 
 df_dis$ambiguity = as.numeric(df_dis$ambiguity)
 df_dis$insulting = as.numeric(df_dis$insulting)

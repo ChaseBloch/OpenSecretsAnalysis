@@ -16,12 +16,12 @@ qualtrics_api_credentials(api_key = "8BhFgrQIJ9YIDgPHwx78h4Sid2VI2tKLDYXQEULF",
                           install = TRUE,
                           overwrite = TRUE)
 
-setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis")
+setwd("G:\\My Drive\\GD_Work\\Dissertation\\JointPaper\\OpenSecretsAnalysis")
 
 # Import Survey and correct variable names
 surveys <- all_surveys()
-df1 <- fetch_survey(surveyID = surveys$id[10],verbose =TRUE,force_request = TRUE)
-df2 <- fetch_survey(surveyID = surveys$id[2],verbose =TRUE,force_request = TRUE)
+df1 <- fetch_survey(surveyID = surveys$id[11],verbose =TRUE,force_request = TRUE)
+df2 <- fetch_survey(surveyID = surveys$id[3],verbose =TRUE,force_request = TRUE)
 df3 <- rbindlist(list(df1, df2), fill = TRUE)
 names(df3) <- gsub(":", "", names(df3))
 names(df3) <- make.names(names(df3), unique=TRUE)
@@ -114,6 +114,14 @@ df$esca_scaled = (scale(as.numeric(df$escalation_1)) +
                     scale(as.numeric(df$escalation_4)))/4
 df$esca_scaled = (df$esca_scaled - min(df$esca_scaled, na.rm = TRUE))
 df$esca_scaled = df$esca_scaled/max(df$esca_scaled,na.rm = TRUE)*100
+
+# Weighted average version
+df$esca_scaled_wa = (scale(as.numeric(df$escalation_1))*1 + 
+                    scale(as.numeric(df$escalation_2))*2 + 
+                    scale(as.numeric(df$escalation_3))*3 + 
+                    scale(as.numeric(df$escalation_4)))*4/(4+3+2+1)
+df$esca_scaled_wa = (df$esca_scaled_wa - min(df$esca_scaled_wa, na.rm = TRUE))
+df$esca_scaled_wa = df$esca_scaled_wa/max(df$esca_scaled_wa,na.rm = TRUE)*100
 
 # Create individual escalation variables for each answer
 df$war = df$escalation_4
@@ -211,50 +219,50 @@ df_sum$insulting = as.numeric(df$insulting)
 df_sum$ambiguity = as.numeric(df$ambiguity)
 df_sum_i = df_sum[df_sum$adversary==1]
 df_sum_i$adversary = NULL
-stargazer(df_sum_i, summary = TRUE, type = 'html', out ='Figures/Iran_Sum.html', digits = 2, 
+stargazer(df_sum_i, summary = TRUE, type = 'html', out ='FinalScripts&Figures/Iran_Sum.html', digits = 2, 
           covariate.labels = c('Escalation Preference', 'Denial', 'Reputation', 'Insult', 
                                'Certainty', 'Militant Assertiveness', 'National Chauvinism', 
                                'Trust in Gov.', 'Trust in News', 'International Trust', 'Foreign Policy Interest'),
           summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
-BROWSE('Figures/Iran_Sum.html')
+#BROWSE('FinalScripts&Figures/Iran_Sum.html')
 
 # Qatar
 df_sum_q = df_sum[df_sum$adversary==0]
 df_sum_q$adversary = NULL
-stargazer(df_sum_q, summary = TRUE, type = 'html', out ='Figures/Qatar_Sum.html', digits = 2, 
+stargazer(df_sum_q, summary = TRUE, type = 'html', out ='FinalScripts&Figures/Qatar_Sum.html', digits = 2, 
           covariate.labels = c('Escalation Preference', 'Denial', 'Reputation', 'Insult', 
                                'Certainty', 'Militant Assertiveness', 'National Chauvinism', 
                                'Trust in Gov.', 'Trust in News', 'International Trust', 'Foreign Policy Interest'),
           summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
-BROWSE('Figures/Qatar_Sum.html')
+#BROWSE('FinalScripts&Figures/Qatar_Sum.html')
 
 # Iran Demographic Controls
 df_sum_dem = df %>% dplyr::select(adversary, age, male, hhi, white, black, education, republican, democrat)
 df_sum_dem_i = df_sum_dem[df_sum_dem$adversary==1]
 df_sum_dem_i$adversary = NULL
-stargazer(df_sum_dem_i, summary = TRUE, type = 'html', out ='Figures/Iran_Sum_Dem.html', digits = 2, 
+stargazer(df_sum_dem_i, summary = TRUE, type = 'html', out ='FinalScripts&Figures/Iran_Sum_Dem.html', digits = 2, 
           covariate.labels = c('Age', 'Male', 'Household Income', 'White', 'Black', 'Education','Republican', 'Democrat'),
           summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
-BROWSE('Figures/Iran_Sum_Dem.html')
+#BROWSE('FinalScripts&Figures/Iran_Sum_Dem.html')
 
 # Qatar Demographic Controls
 df_sum_dem = df %>% dplyr::select(adversary, age, male, hhi, white, black, education, republican, democrat)
 df_sum_dem_q = df_sum_dem[df_sum_dem$adversary==0]
 df_sum_dem_q$adversary = NULL
-stargazer(df_sum_dem_q, summary = TRUE, type = 'html', out ='Figures/Qatar_Sum_Dem.html', digits = 2, 
+stargazer(df_sum_dem_q, summary = TRUE, type = 'html', out ='FinalScripts&Figures/Qatar_Sum_Dem.html', digits = 2, 
           covariate.labels = c('Age', 'Male', 'Household Income', 'White', 'Black', 'Education','Republican', 'Democrat'),
           summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
-BROWSE('Figures/Qatar_Sum_Dem.html')
+BROWSE('FinalScripts&Figures/Qatar_Sum_Dem.html')
 
 #Linear Models
 
 
-df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrust, 
+df_res = df %>% dplyr::select(denial, adversary, esca_scaled, esca_scaled_wa, MA_scaled, GovTrust, 
                               NewsTrust, IntTrust, NC_scaled, Military.Service, Read.FP,
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, 
                               diplomacy, age, male, hhi, white, black, education, republican, democrat)
 df_res[] <- lapply(df_res, as.numeric)
-#write.csv(df_res, "2X2Data_Final.csv")
+write.csv(df_res, "2X2Data_Final.csv")
 
 
 ###Bar Plot Iran####

@@ -16,8 +16,7 @@ qualtrics_api_credentials(api_key = "8BhFgrQIJ9YIDgPHwx78h4Sid2VI2tKLDYXQEULF",
                           install = TRUE,
                           overwrite = TRUE)
 
-setwd("C:/Users/chase/GDrive/GD_Work/Dissertation/JointPaper/OpenSecretsAnalysis")
-
+setwd("G:\\My Drive\\GD_Work\\Dissertation\\JointPaper\\OpenSecretsAnalysis")
 # Import Survey and correct variable names
 surveys <- all_surveys()
 df <- fetch_survey(surveyID = surveys$id[1],verbose =TRUE,force_request = TRUE)
@@ -116,6 +115,14 @@ df$esca_scaled = (scale(as.numeric(df$escalation_1)) +
 df$esca_scaled = (df$esca_scaled - min(df$esca_scaled, na.rm = TRUE))
 df$esca_scaled = df$esca_scaled/max(df$esca_scaled,na.rm = TRUE)*100
 
+# Weighted average version
+df$esca_scaled_wa = (scale(as.numeric(df$escalation_1))*1 + 
+                       scale(as.numeric(df$escalation_2))*2 + 
+                       scale(as.numeric(df$escalation_3))*3 + 
+                       scale(as.numeric(df$escalation_4)))*4/(4+3+2+1)
+df$esca_scaled_wa = (df$esca_scaled_wa - min(df$esca_scaled_wa, na.rm = TRUE))
+df$esca_scaled_wa = df$esca_scaled_wa/max(df$esca_scaled_wa,na.rm = TRUE)*100
+
 # Create individual escalation variables for each answer
 df$war = df$escalation_4
 df$airstrike = df$escalation_3
@@ -209,26 +216,26 @@ df_sum = df %>% dplyr::select(esca_scaled, denial, adversary, reputation_scaled,
 df_sum$insulting = as.numeric(df$insulting)
 df_sum$ambiguity = as.numeric(df$ambiguity)
 
-stargazer(df_sum, summary = TRUE, type = 'html', out ='Figures2/Iran_Sum.html', digits = 2, 
+stargazer(df_sum, summary = TRUE, type = 'html', out ='FinalScripts&Figures/Iran_Sum.html', digits = 2, 
           covariate.labels = c('Escalation Preference', 'Denial', 'Reputation', 'Insult', 
                                'Certainty', 'Militant Assertiveness', 'National Chauvinism', 
                                'Trust in Gov.', 'Trust in News', 'International Trust', 'Foreign Policy Interest'),
           summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
-BROWSE('Figures2/Iran_Sum.html')
+BROWSE('FinalScripts&Figures/Iran_Sum.html')
 
 # Iran Demographic Controls
 df_sum_dem = df %>% dplyr::select(adversary, age, male, hhi, white, black, education, republican, democrat)
 
-stargazer(df_sum_dem, summary = TRUE, type = 'html', out ='Figures2/Iran_Sum_Dem.html', digits = 2, 
+stargazer(df_sum_dem, summary = TRUE, type = 'html', out ='FinalScripts&Figures/Iran_Sum_Dem.html', digits = 2, 
           covariate.labels = c('Age', 'Male', 'Household Income', 'White', 'Black', 'Education','Republican', 'Democrat'),
           summary.stat = c('n', 'mean', 'median', 'sd', 'min', 'max'))
-BROWSE('Figures2/Iran_Sum_Dem.html')
+BROWSE('FinalScripts&Figures/Iran_Sum_Dem.html')
 
 
 #Linear Models
 
 
-df_res = df %>% dplyr::select(denial, adversary, esca_scaled, MA_scaled, GovTrust, 
+df_res = df %>% dplyr::select(denial, adversary, esca_scaled, esca_scaled_wa, MA_scaled, GovTrust, 
                               NewsTrust, IntTrust, NC_scaled, Read.FP,
                               reputation_scaled, ambiguity, insulting, war, airstrike, sanctions, 
                               diplomacy, age, male, hhi, white, black, education, republican, democrat)
@@ -304,7 +311,7 @@ ggplot(aes(x = type, y = means, fill = treat), data = forgraph, group = factor(t
   theme(axis.text.y = element_text(angle = 0, size = 12.5),
         axis.text.x = element_text(size = 12.5),
         legend.text = element_text(size = 12.5)) 
-ggsave("Figures2/avg_escalation_iran.png", width = 6, height = 4, unit = "in")
+ggsave("FinalScripts&Figures/avg_escalation_iran.png", width = 6, height = 4, unit = "in")
 
 
 
